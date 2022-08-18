@@ -16,6 +16,9 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
+from izoor.views import GoodsApiView
+
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('api/v1/goodsList/', GoodsApiView.as_view())
 ]
