@@ -6,8 +6,8 @@ from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework.views import APIView
 # Create your views here.
-from izoor.models import Goods
-from izoor.serializers import GoodSerializator
+from izoor.models import Goods, Organization
+from izoor.serializers import GoodSerializator, OrganizationSerializator
 
 
 # class GoodsApiView(generics.ListAPIView):
@@ -31,5 +31,43 @@ class GoodsApiView(APIView):
         #     supplier_id=[UUID('supplier_id')],
         #     category_id=[UUID('category_id')],
         # )
-
         return Response({'post': 'GoodSerializator(new_good).data'})
+
+class OrganizationApiView(APIView):
+    def get(self, request):
+        organizations = Organization.objects.all().values()
+        org_serialized = OrganizationSerializator(organizations, many=True).data
+        return Response({'posts': org_serialized})
+
+    def post(self, request):
+        serializer = OrganizationSerializator(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response({'post': serializer.data})
+
+    def put(self, request, *args, **kwargs):
+        pk = kwargs.get("pk", None)
+        if not pk:
+            return Response({"error": "Method Put is not allowed"})
+        try:
+            intance = Organization.objects.get(pk=pk)
+        except:
+            return Response({"error": "Object is not exist"})
+
+        serializer = OrganizationSerializator(data=request.data, instance=intance)
+        serializer.is_valid()
+        serializer.save()
+        return Response({'post': serializer.data})
+
+    def delete(self, request, *args, **kwargs):
+        pk = kwargs.get("pk", None)
+        if not pk:
+            return Response({"error": "Method Delete is not allowed"})
+        try:
+            instance = Organization.objects.get(pk=pk)
+        except:
+            return Response({"error": "Object is not exist"})
+        instance.delete()
+        return Response({'post': 'deleted'})
+
+

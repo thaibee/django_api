@@ -3,17 +3,19 @@ import io
 from rest_framework import serializers
 from rest_framework.parsers import JSONParser
 from rest_framework.renderers import JSONRenderer
+from rest_framework.validators import UniqueValidator
 
-from izoor.models import Goods
+from izoor.models import Goods, Organization
 
- # Первая версия сериализатора из модели
+
+# Первая версия сериализатора из модели
 # class GoodsSerializer(serializers.ModelSerializer):
 #     class Meta:
 #         model = Goods
 #         fields = ('barcode', 'name', 'category')
 
 
-#Ручная сериализация
+# Ручная сериализация
 # class GoodsModel:
 #     def __init__(self, barcode, name, price):
 #         self.barcode = barcode
@@ -43,3 +45,20 @@ class GoodSerializator(serializers.Serializer):
     price = serializers.DecimalField(max_digits=19, decimal_places=4)
     category_id = serializers.CharField(max_length=36)
     supplier_id = serializers.CharField(max_length=36)
+
+
+class OrganizationSerializator(serializers.Serializer):
+    name = serializers.CharField(max_length=200, trim_whitespace=True,
+                                 validators=[UniqueValidator(queryset=Organization.objects.all())])
+    address = serializers.CharField(max_length=200)
+    overdraft = serializers.BooleanField()
+
+    def create(self, validated_data):
+        return Organization.objects.create(**validated_data)
+
+    def update(self, instance, validated_data):
+        instance.name = validated_data.get("name", instance.name)
+        instance.address = validated_data.get("address", instance.address)
+        instance.overdraft = validated_data.get("overdraft", instance.overdraft)
+        instance.save()
+        return instance

@@ -78,3 +78,17 @@ class Supplier(models.Model):
         managed = False
         db_table = 'Supplier'
         ordering = ['name']
+
+class Organization(models.Model):
+    slug = MssqlUUID(primary_key=True, db_column='OrganizationID', max_length=36, editable=False, default=None)
+    name = models.CharField(db_column='Org_Name', unique=True, max_length=200, verbose_name='Company')
+    address = models.CharField(db_column='Org_Address', blank=True, null=False, max_length=200)
+    overdraft = models.BooleanField(db_column='CanOverdraft')
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        managed = False
+        db_table = 'Organization'
+        ordering = ['name']
