@@ -69,4 +69,4 @@ class POSUserSerializator(serializers.ModelSerializer):
     class Meta:
         model = POSUser
         #fields = '__all__'
-        fields = ("name", "user_id", "pin")
+        fields = ("name", "user_id", "pin", "right")

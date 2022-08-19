@@ -16,14 +16,14 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
-from izoor.views import GoodsApiView, OrganizationApiView, POSUserApiView
+from izoor.views import *
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/v1/goodsList/', GoodsApiView.as_view()),
     path('api/v1/orgList/', OrganizationApiView.as_view()),
     path('api/v1/orgList/<str:pk>/', OrganizationApiView.as_view()),
-    path('api/v1/pos_user/', POSUserApiView.as_view()),
-    path('api/v1/pos_user/<str:pk>/', POSUserApiView.as_view()),
+    path('api/v1/pos_user/', POSUserAPIList.as_view()),
+    path('api/v1/pos_user/<str:pk>/', POSUserAPIUpdate.as_view()),
 
 ]

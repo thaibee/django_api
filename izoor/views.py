@@ -83,6 +83,18 @@ class POSUserApiView(APIView):
         return Response({'posts': user_serialized})
 
 
+class POSUserAPIList(generics.ListCreateAPIView):
+    queryset = POSUser.objects.all()
+    serializer_class = POSUserSerializator
+
+
+class POSUserAPIUpdate(generics.RetrieveUpdateDestroyAPIView):
+    queryset = POSUser.objects.all()
+    serializer_class = POSUserSerializator
+
+
+
+
     # def post(self, request):
     #     serializer = OrganizationSerializator(data=request.data)
     #     serializer.is_valid(raise_exception=True)
