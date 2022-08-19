@@ -14,16 +14,23 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
 
 from izoor.views import *
+from rest_framework import routers
+
+router = routers.SimpleRouter()
+router.register(r'goods', GoodAPIModelView)
+router.register(r'organizations', OrganizationAPIModelView)
+router.register(r'pos_user', POSUserAPIModelView)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/v1/goodsList/', GoodsApiView.as_view()),
-    path('api/v1/orgList/', OrganizationApiView.as_view()),
-    path('api/v1/orgList/<str:pk>/', OrganizationApiView.as_view()),
-    path('api/v1/pos_user/', POSUserAPIList.as_view()),
-    path('api/v1/pos_user/<str:pk>/', POSUserAPIUpdate.as_view()),
+    path('api/v1/', include(router.urls)),
+    # path('api/v1/goods_list/', GoodAPIModelView.as_view({'get': 'list'})),
+    # path('api/v1/org_list/', OrganizationAPIModelView.as_view({'get': 'list'})),
+    # path('api/v1/org_list/<str:pk>/', OrganizationAPIModelView.as_view({'get': 'retrieve'})),
+    # path('api/v1/pos_user/', POSUserAPIModelView.as_view({'get': 'list'})),
+    # path('api/v1/pos_user/<str:pk>/', POSUserAPIModelView.as_view({'get': 'retrieve'})),
 
 ]
