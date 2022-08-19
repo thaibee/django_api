@@ -79,6 +79,7 @@ class Supplier(models.Model):
         db_table = 'Supplier'
         ordering = ['name']
 
+
 class Organization(models.Model):
     slug = MssqlUUID(primary_key=True, db_column='OrganizationID', max_length=36, editable=False, default=None)
     name = models.CharField(db_column='Org_Name', unique=True, max_length=200, verbose_name='Company')
@@ -92,3 +93,33 @@ class Organization(models.Model):
         managed = False
         db_table = 'Organization'
         ordering = ['name']
+
+
+class POSUser(models.Model):
+    slug = MssqlUUID(primary_key=True, db_column='UserID', max_length=36, editable=False, default=None)
+    user_id = models.CharField(db_column='EmpID', unique=True, max_length=5)
+    name = models.CharField(db_column='UserName', unique=True, max_length=50)
+    right = models.ForeignKey(db_column='ListRight', to_field='right', to='POSRight',
+                              on_delete=models.PROTECT, null=False)
+    pin = models.IntegerField(db_column='Pin')
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        managed = False
+        db_table = 'LocalUsers'
+        ordering = ['user_id']
+
+
+class POSRight(models.Model):
+    right = models.CharField(primary_key=True, db_column='ListRight', max_length=36, editable=False)
+    description = models.CharField(db_column='Description', max_length=50)
+
+    def __str__(self):
+        return self.right
+
+    class Meta:
+        managed = False
+        db_table = 'LocalUserRight'
+        ordering = ['right']

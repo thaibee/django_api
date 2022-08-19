@@ -5,7 +5,7 @@ from rest_framework.parsers import JSONParser
 from rest_framework.renderers import JSONRenderer
 from rest_framework.validators import UniqueValidator
 
-from izoor.models import Goods, Organization
+from izoor.models import Goods, Organization, POSUser, POSRight
 
 
 # Первая версия сериализатора из модели
@@ -39,6 +39,7 @@ from izoor.models import Goods, Organization
 #     print(serializer.validated_data)
 #     print(serializer.errors)
 
+#Вторая версия сериализатора с проверками и т.д.
 class GoodSerializator(serializers.Serializer):
     barcode = serializers.CharField(max_length=15)
     name = serializers.CharField(max_length=50)
@@ -62,3 +63,10 @@ class OrganizationSerializator(serializers.Serializer):
         instance.overdraft = validated_data.get("overdraft", instance.overdraft)
         instance.save()
         return instance
+
+
+class POSUserSerializator(serializers.ModelSerializer):
+    class Meta:
+        model = POSUser
+        #fields = '__all__'
+        fields = ("name", "user_id", "pin")
