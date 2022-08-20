@@ -2,16 +2,34 @@ from uuid import UUID
 from django.forms import model_to_dict
 from django.shortcuts import render
 from rest_framework import generics, viewsets
+from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from izoor.models import Goods, Organization, POSUser
+from izoor.models import Goods, Organization, POSUser, GoodsCategory
 from izoor.serializers import GoodSerializator, OrganizationSerializator, POSUserSerializator
 
 
 class GoodAPIModelView(viewsets.ModelViewSet):
-    queryset = Goods.objects.all()
+    # убрал quesryset добавь basename в url
+    # queryset = Goods.objects.all()
     serializer_class = GoodSerializator
+
+    def get_queryset(self):
+        pk = self.kwargs.get("pk")
+        if not pk:
+            return Goods.objects.all()[:5]
+        return Goods.objects.filter(pk=pk)
+
+    @action(methods=['get'], detail=False)
+    def categories(self, request):
+        cats = GoodsCategory.objects.all()
+        return Response({'cats': [(c.name.strip(), c.slug) for c in cats]})
+
+    @action(methods=['get'], detail=True)
+    def category(self, request, pk=None):
+        cat = GoodsCategory.objects.get(pk=pk)
+        return Response({'cats': cat.name.strip()})
 
 
 class OrganizationAPIModelView(viewsets.ModelViewSet):
@@ -22,7 +40,6 @@ class OrganizationAPIModelView(viewsets.ModelViewSet):
 class POSUserAPIModelView(viewsets.ModelViewSet):
     queryset = POSUser.objects.all()
     serializer_class = POSUserSerializator
-
 
 # # стандартный метод вывода
 # class GoodsApiView(APIView):

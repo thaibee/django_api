@@ -20,7 +20,7 @@ from izoor.views import *
 from rest_framework import routers
 
 router = routers.SimpleRouter()
-router.register(r'goods', GoodAPIModelView)
+router.register(r'goods', GoodAPIModelView, basename='goods')
 router.register(r'organizations', OrganizationAPIModelView)
 router.register(r'pos_user', POSUserAPIModelView)
 
