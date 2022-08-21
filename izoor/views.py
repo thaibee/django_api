@@ -3,11 +3,32 @@ from django.forms import model_to_dict
 from django.shortcuts import render
 from rest_framework import generics, viewsets
 from rest_framework.decorators import action
+from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from izoor.models import Goods, Organization, POSUser, GoodsCategory
-from izoor.serializers import GoodSerializator, OrganizationSerializator, POSUserSerializator
+from izoor.models import Goods, Organization, POSUser, GoodsCategory, Women
+from izoor.permissions import IsAdminOrReadOnly, IsOwnerOrReadOnly
+from izoor.serializers import GoodSerializator, OrganizationSerializator, POSUserSerializator, WomenSerializator
+
+
+class WomenCLView(generics.ListCreateAPIView):
+    queryset = Women.objects.all()
+    serializer_class = WomenSerializator
+    permission_classes = [IsAuthenticatedOrReadOnly]
+
+
+class WomanRUView(generics.RetrieveUpdateAPIView):
+    queryset = Women.objects.all()
+    serializer_class = WomenSerializator
+    permission_classes = [IsOwnerOrReadOnly]
+
+
+class WomanRDView(generics.RetrieveDestroyAPIView):
+    queryset = Women.objects.all()
+    serializer_class = WomenSerializator
+    #самодельный класс лежит в permissions.py
+    permission_classes = (IsAdminOrReadOnly, )
 
 
 class GoodAPIModelView(viewsets.ModelViewSet):

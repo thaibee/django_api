@@ -5,7 +5,7 @@ from rest_framework.parsers import JSONParser
 from rest_framework.renderers import JSONRenderer
 from rest_framework.validators import UniqueValidator
 
-from izoor.models import Goods, Organization, POSUser, POSRight
+from izoor.models import Goods, Organization, POSUser, POSRight, Women
 
 
 # Первая версия сериализатора из модели
@@ -95,3 +95,11 @@ class POSUserSerializator(serializers.ModelSerializer):
         model = POSUser
         # fields = '__all__'
         fields = ("name", "user_id", "pin", "right")
+
+
+class WomenSerializator(serializers.ModelSerializer):
+    user = serializers.HiddenField(default=serializers.CurrentUserDefault())
+
+    class Meta:
+        model = Women
+        fields = '__all__'

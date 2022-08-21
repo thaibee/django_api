@@ -27,6 +27,9 @@ router.register(r'pos_user', POSUserAPIModelView)
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/v1/', include(router.urls)),
+    path('api/v1/women/', WomenCLView.as_view()),
+    path('api/v1/woman/<str:pk>/', WomanRUView.as_view()),
+    path('api/v1/woman_delete/<str:pk>/', WomanRDView.as_view()),
     # path('api/v1/goods_list/', GoodAPIModelView.as_view({'get': 'list'})),
     # path('api/v1/org_list/', OrganizationAPIModelView.as_view({'get': 'list'})),
     # path('api/v1/org_list/<str:pk>/', OrganizationAPIModelView.as_view({'get': 'retrieve'})),
