@@ -15,7 +15,7 @@ from izoor.serializers import GoodSerializator, OrganizationSerializator, POSUse
 class WomenCLView(generics.ListCreateAPIView):
     queryset = Women.objects.all()
     serializer_class = WomenSerializator
-    permission_classes = [IsAuthenticatedOrReadOnly]
+    permission_classes = [IsAuthenticated]
 
 
 class WomanRUView(generics.RetrieveUpdateAPIView):
@@ -35,6 +35,7 @@ class GoodAPIModelView(viewsets.ModelViewSet):
     # убрал quesryset добавь basename в url
     # queryset = Goods.objects.all()
     serializer_class = GoodSerializator
+    permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         pk = self.kwargs.get("pk")
