@@ -24,6 +24,7 @@ router = routers.SimpleRouter()
 router.register(r'goods', GoodAPIModelView, basename='goods')
 router.register(r'organizations', OrganizationAPIModelView)
 router.register(r'pos_user', POSUserAPIModelView)
+router.register(r'wristband', WristbandView)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -34,6 +35,9 @@ urlpatterns = [
     path('api/v1/woman_delete/<str:pk>/', WomanRDView.as_view()),
     path('api/v1/auth/', include('djoser.urls')),
     re_path(r'^auth/', include('djoser.urls.authtoken')),
+    path('api/v1/wristbands/', WristbandListView.as_view()),
+    path('api/v1/wristband_balance_history/', WristbandBalanceHistoryView.as_view()),
+    #path('api/v1/wristband/<str:pk>/', WristbandView.as_view()),
     # path('api/v1/goods_list/', GoodAPIModelView.as_view({'get': 'list'})),
     # path('api/v1/org_list/', OrganizationAPIModelView.as_view({'get': 'list'})),
     # path('api/v1/org_list/<str:pk>/', OrganizationAPIModelView.as_view({'get': 'retrieve'})),

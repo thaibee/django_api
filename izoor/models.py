@@ -5,25 +5,6 @@ from api.mssql_uuid import MssqlUUID
 from django.db import models
 
 
-class Wristbands(models.Model):
-    id = models.CharField(db_column='Wrist_NUM', primary_key=True, max_length=10, editable=False, default=None)
-    balance = models.DecimalField(db_column='Top_up_rest', max_digits=19, decimal_places=4, blank=False, null=False)
-
-    def get_absolute_url(self):
-        return reverse('wristbands', kwargs={"slug": self.slug})
-
-    def __str__(self):
-        return self.id
-
-    # def get_countries(self):
-    #     return self.org_country
-
-    class Meta:
-        managed = False
-        db_table = 'Wristbands'
-        ordering = ['id']
-
-
 class Goods(models.Model):
     slug = MssqlUUID(primary_key=True, db_column='goodsID', max_length=36, editable=False,
                      default=None)
@@ -144,3 +125,53 @@ class Category(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class Wristband(models.Model):
+    id = models.CharField(db_column='Wrist_NUM', primary_key=True, max_length=10, editable=False, default=None)
+    balance = models.DecimalField(db_column='Top_up_rest', max_digits=19, decimal_places=4, blank=False, null=False)
+
+    def get_absolute_url(self):
+        return reverse('wristbands', kwargs={"slug": self.slug})
+
+    def __str__(self):
+        return self.id
+
+    # def get_countries(self):
+    #     return self.org_country
+
+    class Meta:
+        managed = False
+        db_table = 'Wristbands'
+        ordering = ['id']
+
+
+class WristbandHistory(models.Model):
+    slug = MssqlUUID(primary_key=True, db_column='WristEventId', max_length=36, editable=False, default=None)
+    number = models.CharField(db_column='Wrist_NUM', max_length=10, editable=False, default=None)
+    time = models.DateTimeField(db_column='WristEventDate', auto_now_add=True)
+    type = models.CharField(db_column='EventType', max_length=6, null=False,blank=False)
+    place = models.CharField(db_column='PLaceId', max_length=16, null=False,blank=False)
+    description = models.CharField(db_column='Comment', max_length=50, null=True, blank=True)
+
+    class Meta:
+        managed = False
+        db_table = 'WristEvents'
+        ordering = ['-time']
+
+
+class WristbandBalanceHistory(models.Model):
+    slug = MssqlUUID(primary_key=True, db_column='WristDepoId', max_length=36, editable=False, default=None)
+    number = models.CharField(db_column='Wrist_NUM', max_length=10, editable=False, default=None)
+    type = models.CharField(db_column='OperationType', max_length=3, null=False, default='TOP')
+    sign = models.IntegerField(db_column='OperationSign', null=False)
+    amount = models.DecimalField(db_column='OperationSumm', max_digits=19, decimal_places=4, blank=False, null=False)
+    bill_number = models.CharField(db_column='RelDocumentNum', max_length=3, null=False,blank=False)
+    time = models.DateTimeField(db_column='OperationDate', auto_now_add=True)
+    description = models.CharField(db_column='OperationDesc', max_length=3, null=False,blank=False)
+    accept = models.BooleanField(db_column='OperationAccepted', null=False, default= True)
+
+    class Meta:
+        managed = False
+        db_table = 'WristDeposite'
+        ordering = ['-time']

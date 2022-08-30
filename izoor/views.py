@@ -1,3 +1,4 @@
+from genericpath import exists
 from uuid import UUID
 from django.forms import model_to_dict
 from django.shortcuts import render
@@ -7,10 +8,50 @@ from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnl
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from izoor.models import Goods, Organization, POSUser, GoodsCategory, Women
+from izoor.models import Goods, Organization, POSUser, GoodsCategory, Women, Wristband, WristbandBalanceHistory
 from izoor.permissions import IsAdminOrReadOnly, IsOwnerOrReadOnly
-from izoor.serializers import GoodSerializator, OrganizationSerializator, POSUserSerializator, WomenSerializator
+from izoor.serializers import GoodSerializator, OrganizationSerializator, POSUserSerializator, WomenSerializator, WristbandBalanceHistorySerializator, WristbandSerializator
 
+
+class WristbandListView(generics.ListAPIView):
+    queryset = Wristband.objects.all()[:20]
+    serializer_class = WristbandSerializator
+    permission_classes = [IsAuthenticated]
+
+class WristbandView(viewsets.ModelViewSet):
+    queryset = Wristband.objects.all()
+    serializer_class = WristbandSerializator
+    permission_classes = [IsAuthenticatedOrReadOnly]
+
+    def get_queryset(self):
+        pk = self.kwargs.get("pk")
+        if not pk:
+            return []
+        return Wristband.objects.filter(pk=pk)
+
+    @action(methods=['post'], detail=True)
+    def change(self, request, pk=None):
+        try:
+            amount = int(request.data['amount'])
+            wristband = Wristband.objects.get(pk=pk)
+            wristband.balance += amount
+            wristband.save()
+            wr_history = WristbandBalanceHistory(number = '123', sign = 1, amount = amount, bill_number = '25', description = 'test')
+            wr_history.save()
+            return Response(wristband.balance)
+        except:
+            return Response('wrong amount')
+            print ('wrong amount')    
+        #cat = GoodsCategory.objects.get(pk=pk)
+        #return Response({'get': 'ok'})
+
+
+
+
+class WristbandBalanceHistoryView(generics.ListAPIView):
+    queryset = WristbandBalanceHistory.objects.all()[:20]
+    serializer_class = WristbandBalanceHistorySerializator
+    permission_classes = [IsAuthenticated]
 
 class WomenCLView(generics.ListCreateAPIView):
     queryset = Women.objects.all()
@@ -35,7 +76,7 @@ class GoodAPIModelView(viewsets.ModelViewSet):
     # убрал quesryset добавь basename в url
     # queryset = Goods.objects.all()
     serializer_class = GoodSerializator
-    permission_classes = [IsAdminUser]
+    permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         pk = self.kwargs.get("pk")
@@ -62,6 +103,7 @@ class OrganizationAPIModelView(viewsets.ModelViewSet):
 class POSUserAPIModelView(viewsets.ModelViewSet):
     queryset = POSUser.objects.all()
     serializer_class = POSUserSerializator
+
 
 # # стандартный метод вывода
 # class GoodsApiView(APIView):

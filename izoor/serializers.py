@@ -5,7 +5,7 @@ from rest_framework.parsers import JSONParser
 from rest_framework.renderers import JSONRenderer
 from rest_framework.validators import UniqueValidator
 
-from izoor.models import Goods, Organization, POSUser, POSRight, Women
+from izoor.models import Goods, Organization, POSUser, POSRight, Women, Wristband, WristbandBalanceHistory
 
 
 # Первая версия сериализатора из модели
@@ -103,3 +103,20 @@ class WomenSerializator(serializers.ModelSerializer):
     class Meta:
         model = Women
         fields = '__all__'
+
+
+class WristbandSerializator(serializers.ModelSerializer):
+    #user = serializers.HiddenField(default=serializers.CurrentUserDefault())
+
+    class Meta:
+        model = Wristband
+        fields = ('id', 'balance',)
+        read_only_fields = ('id',)
+
+
+class WristbandBalanceHistorySerializator(serializers.ModelSerializer):
+    class Meta:
+        model = WristbandBalanceHistory
+        fields = '__all__'
+        #fields = ('id', 'balance',)
+        #read_only_fields = ('id',)

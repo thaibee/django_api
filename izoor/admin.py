@@ -10,7 +10,7 @@ class POSRightAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Goods)
-admin.site.register(Wristbands)
+admin.site.register(Wristband)
 admin.site.register(GoodsCategory)
 admin.site.register(Supplier)
 admin.site.register(Organization)
