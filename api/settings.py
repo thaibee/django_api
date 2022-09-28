@@ -27,6 +27,7 @@ SECRET_KEY = 'django-insecure-$j&n1!9sep+&+^d_db1oaztk5o6*8o#i^tf8c5u!f^x4$$nbrk
 DEBUG = True
 
 ALLOWED_HOSTS = ['127.0.0.1', 'localhost',]
+CSRF_TRUSTED_ORIGINS = ['http://127.0.0.1', 'http://localhost',]
 
 # Application definition
 
@@ -111,7 +112,11 @@ USE_TZ = False
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
 STATIC_URL = 'static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+# STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+STATICFILES_DIRS = [
+    BASE_DIR / "static",
+    # '/var/www/static/',
+]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
